@@ -79,7 +79,7 @@ let map_to_argb x =
 let argb_array = array_map map_to_argb log_count
 
 stopWatch.Stop()
-let elapsed = String.Format("{0} milliseconds", stopWatch.Elapsed.TotalMilliseconds)
+let elapsed = sprintf "%f milliseconds" stopWatch.Elapsed.TotalMilliseconds
 
 // ********************************************************************
 // Windows forms
