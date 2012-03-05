@@ -36,7 +36,7 @@ public class MandelbrotView : Form
     	return Math.Log(k + 1.0 - Math.Log(Math.Log(Math.Max(mag2(z), escape2)) / 2.0) / Math.Log(2.0));
 	}
 	
-	double[,] color_map = new double[,]
+	static readonly double[,] color_map = new double[,]
 	    { { 0.0, 0.0, 0.5 } ,
 	      { 0.0, 0.0, 1.0 } ,
 	      { 0.0, 0.5, 1.0 } ,
@@ -56,7 +56,7 @@ public class MandelbrotView : Form
 	      { 0.0, 0.0, 1.0 } ,
 	      { 0.0, 0.0, 0.5 } ,
 	      { 0.0, 0.0, 0.0 } };
-	
+
 	int interpolate(double d, double v0, double v1)
 	{
 	    return (int)((d * (v1 - v0) + v0) * 255.0);
@@ -65,11 +65,13 @@ public class MandelbrotView : Form
 	double min_result = 0.0;
 	double max_result = 0.0;
 	
+	readonly int stops = color_map.GetLength(0) - 1;
+	
 	int map_to_argb(double x)
 	{
-	    x = (x - min_result) / (max_result - min_result) * 18.0;
+	    x = (x - min_result) / (max_result - min_result) * stops;
 	    int bin = (int) x;
-	    if(bin >= 18)
+	    if(bin >= stops)
 	    	return unchecked((int)0xff000000);
 	    else {
 	        double r0 = color_map[bin,0];

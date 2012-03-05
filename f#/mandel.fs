@@ -63,10 +63,12 @@ let color_map = [|( 0.0, 0.0, 0.5 ) ;
                  ( 0.0, 0.0, 0.5 ) ;
                  ( 0.0, 0.0, 0.0 ) |]
 
+let stops = color_map.Length - 1
+
 let map_to_argb x =
-    let x = (x - min_result) / (max_result - min_result) * 18.0
+    let x = (x - min_result) / (max_result - min_result) * (float stops)
     let bin = int x
-    if bin >= 18 then
+    if bin >= stops then
         0xff000000
     else
         let d = x - float(bin)

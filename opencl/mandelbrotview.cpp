@@ -168,11 +168,13 @@ inline int interpolate(const double& d, const double& v0, const double& v1)
 static double min_result = 0.0;
 static double max_result = 0.0;
 
+const static int stops = sizeof(color_map) / sizeof(color_map[0]) - 1;
+
 inline uint32_t map_to_argb(double x)
 {
-    x = (x - min_result) / (max_result - min_result) * 18.0;
+    x = (x - min_result) / (max_result - min_result) * stops;
     int bin = (int) x;
-    if(bin >= 18)
+    if(bin >= stops)
         return 0xff000000;
     else
     {

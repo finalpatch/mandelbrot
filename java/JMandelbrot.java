@@ -5,13 +5,13 @@ import java.util.concurrent.*;
 
 public class JMandelbrot extends JPanel {
 	
-	int parallelism = 8;
+	final int parallelism = 8;
 	
     // ********************************************************************
     // Mandelbrot
-	int    N       = 1000;
-	int    depth   = 200;
-	double escape2 = 400.0;
+	final int    N       = 1000;
+	final int    depth   = 200;
+	final double escape2 = 400.0;
 	
 	private double[] log_count = new double[N*N];
 	private int[] argb_array = new int[N*N];
@@ -48,7 +48,7 @@ public class JMandelbrot extends JPanel {
 	
     // ********************************************************************
     // Color mapping
-	double[][] color_map =
+	final static double[][] color_map =
 	    { { 0.0, 0.0, 0.5 } ,
 	      { 0.0, 0.0, 1.0 } ,
 	      { 0.0, 0.5, 1.0 } ,
@@ -77,11 +77,13 @@ public class JMandelbrot extends JPanel {
 	double min_result = 0.0;
 	double max_result = 0.0;
 
+    final int stops = color_map.length - 1;
+
 	int map_to_argb(double x)
 	{
-	    x = (x - min_result) / (max_result - min_result) * 18.0;
+	    x = (x - min_result) / (max_result - min_result) * stops;
 	    int bin = (int) x;
-	    if(bin >= 18)
+	    if(bin >= stops)
 	        return 0xff000000;
 	    else {
 	        double r0 = color_map[bin][0];
@@ -127,7 +129,7 @@ public class JMandelbrot extends JPanel {
 		}
 	}
 	
-	int job_size = N*N / parallelism;
+	final int job_size = N*N / parallelism;
 	ExecutorService executor = Executors.newFixedThreadPool(parallelism);
 	
 	void do_mandel() throws InterruptedException, ExecutionException
