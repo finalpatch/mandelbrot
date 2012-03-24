@@ -1,0 +1,72 @@
+open System
+open System.IO
+open System.Drawing
+open System.Windows.Forms
+open SharpDX
+open SharpDX.DXGI
+open SharpDX.Direct3D
+open SharpDX.Direct3D11
+open SharpDX.D3DCompiler
+open System.Diagnostics
+
+let N = 1000
+let depth = 200
+let escape2 = 400
+
+[<Struct>]
+type ShaderArgs(n: int, d: int, e: int) =
+    member v.N = n
+    member v.depth = d
+    member v.escape2 = e
+
+let device = new Device(Direct3D.DriverType.Hardware, DeviceCreationFlags.None, [|FeatureLevel.Level_11_0|])
+
+let loadShader filename entry profile =
+    ShaderBytecode.CompileFromFile(filename, entry, profile, ShaderFlags.None, EffectFlags.None)
+
+let createTexture2D w h fmt flags =
+    let texDesc = new Texture2DDescription(ArraySize = 1, BindFlags = flags, CpuAccessFlags = CpuAccessFlags.None,
+                                           Format = fmt, Width = w, Height = h, MipLevels = 1,
+                                           OptionFlags = ResourceOptionFlags.None, Usage = ResourceUsage.Default,
+                                           SampleDescription = new SampleDescription(1,0))
+    new Texture2D (device, texDesc)
+
+let createArgBuffer (a:'T)  =
+    let bufDesc = new BufferDescription(16, ResourceUsage.Default, BindFlags.ConstantBuffer, CpuAccessFlags.None,
+                                        ResourceOptionFlags.None, 0)
+    let argBuf = new Buffer(device, bufDesc)
+    use argData = new DataStream(16, true, true)
+    argData.Write<'T> a
+    device.ImmediateContext.UpdateSubresource(new DataBox(argData.DataPointer), argBuf, 0)
+    argBuf
+
+
+let compute () =
+    try
+        let cs = new ComputeShader(device, (loadShader "compute.hlsl" "main" "cs_5_0"))
+        let texout = createTexture2D N N Format.R8G8B8A8_UNorm BindFlags.UnorderedAccess
+        let accessview = new UnorderedAccessView (device, texout)
+        let args = createArgBuffer(new ShaderArgs(N, depth, escape2))
+        let stopWatch = Stopwatch.StartNew()
+        device.ImmediateContext.ComputeShader.Set(cs)
+        device.ImmediateContext.ComputeShader.SetUnorderedAccessView(0, accessview)
+        device.ImmediateContext.ComputeShader.SetConstantBuffer(0, args)
+        device.ImmediateContext.Dispatch(N/20,N/20,1) |> ignore
+        let strm = new MemoryStream()
+        Resource.ToStream(device.ImmediateContext, texout, ImageFileFormat.Bmp, strm) |> ignore
+        let elapsed = sprintf "%f milliseconds" stopWatch.Elapsed.TotalMilliseconds
+        let bmp = Image.FromStream strm
+        use gfx = Graphics.FromImage(bmp)
+        gfx.DrawString(elapsed, SystemFonts.MessageBoxFont, new SolidBrush(Color.White), new PointF(20.0f, 20.0f))
+        bmp
+    with
+        | e -> failwith e.InnerException.Message
+
+let box = new PictureBox (BackColor = Color.White, Dock = DockStyle.Fill,
+                          SizeMode = PictureBoxSizeMode.CenterImage, Image = compute ())
+let form = new Form(ClientSize=Size(N,N), Text = "Mandelbrot Set", StartPosition = FormStartPosition.CenterScreen)
+form.Controls.Add(box)
+
+[<STAThread>]
+do
+    Application.Run(form)
