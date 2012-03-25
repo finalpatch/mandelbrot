@@ -63,7 +63,6 @@ float3 map_to_argb(float x)
 [numthreads(20, 20, 1)]
 void main( uint3 threadID : SV_DispatchThreadID )
 {
-    // Output[threadID.xy] = float4(threadID.xy / 1024.0f, 0, 1);
     float2 z0 = trans_xy(threadID.xy, N);
     float2 z = float2(0, 0);
     int k = 0;
@@ -73,5 +72,6 @@ void main( uint3 threadID : SV_DispatchThreadID )
         z = float2(t.x*t.x - t.y*t.y + z0.x, 2*t.x*t.y+z0.y);
     }
     float log_count = log(k + 1.0 - log(log(max(mag2(z), escape2)) / 2.0) / log(2.0));
-    Output[threadID.xy] = float4(map_to_argb(log_count), 1);
+    float3 rgba = map_to_argb(log_count);
+    Output[threadID.xy] = float4(rgba.z, rgba.y, rgba.x, 1);
 }
