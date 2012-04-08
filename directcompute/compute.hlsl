@@ -4,13 +4,13 @@ const int N;
 const int depth;
 const int escape2;
 
-float2 trans_xy(float2 xy, int N)
+double2 trans_xy(float2 xy, int N)
 {
     const float2 offset = float2(2.0, 1.5);
     return (xy / N) * 3.0 - offset;
 }
 
-float mag2(float2 ri)
+double mag2(double2 ri)
 {
     return ri.x*ri.x + ri.y*ri.y;
 }
@@ -63,15 +63,15 @@ float3 map_to_argb(float x)
 [numthreads(20, 20, 1)]
 void main( uint3 threadID : SV_DispatchThreadID )
 {
-    float2 z0 = trans_xy(threadID.xy, N);
-    float2 z = float2(0, 0);
+    double2 z0 = trans_xy(threadID.xy, N);
+    double2 z = double2(0, 0);
     int k = 0;
     for(; k < depth && mag2(z) < escape2; ++k)
     {
-        float2 t = z;
-        z = float2(t.x*t.x - t.y*t.y + z0.x, 2*t.x*t.y+z0.y);
+        double2 t = z;
+        z = double2(t.x*t.x - t.y*t.y + z0.x, 2*t.x*t.y+z0.y);
     }
-    float log_count = log(k + 1.0 - log(log(max(mag2(z), escape2)) / 2.0) / log(2.0));
+    double log_count = log(k + 1.0 - log(log(max(mag2(z), escape2)) / 2.0) / log(2.0));
     float3 rgba = map_to_argb(log_count);
     Output[threadID.xy] = float4(rgba.z, rgba.y, rgba.x, 1);
 }
