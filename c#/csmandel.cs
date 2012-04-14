@@ -24,7 +24,9 @@ public class MandelbrotView : Form
 	}
 	double mag2(Complex c)
 	{
-		return c.Real * c.Real + c.Imaginary * c.Imaginary;
+	    double r = c.Real;
+	    double i = c.Imaginary;
+	    return r*r+i*i;
 	}	
 	double mandel(int idx)
 	{
