@@ -12,7 +12,6 @@ const static double escape2 = 400.0; // escape radius ^ 2
 
 const static int parallelism = 8;
 const static int oclplatform = 1;
-const static int workgroups = N / 10;
 
 double   log_count[N*N];
 uint32_t argb_array[N*N];
@@ -98,7 +97,7 @@ public:
         cl_int err;
         cl::Buffer outbuf(
             m_context,
-            CL_MEM_WRITE_ONLY | CL_MEM_COPY_HOST_PTR,
+            CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
             N*N*sizeof(T),
             buf,
             &err);
@@ -121,7 +120,7 @@ public:
             m_kernel,
             cl::NullRange,
             cl::NDRange(N*N),
-             cl::NDRange(workgroups, 1),
+            cl::NDRange(N, 1),
             NULL,
             &event);
         checkErr(err, "ComamndQueue::enqueueNDRangeKernel()");
