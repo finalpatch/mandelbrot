@@ -1,11 +1,10 @@
 ﻿//
 // App.xaml.h
-// Declaration of the App.xaml class.
+// Declaration of the App class.
 //
 
 #pragma once
 
-#include "pch.h"
 #include "App.g.h"
 
 namespace MandelbrotViewer
@@ -20,6 +19,6 @@ namespace MandelbrotViewer
 		virtual void OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEventArgs^ pArgs) override;
 
 	private:
-		void OnSuspending(Object^ sender, Windows::ApplicationModel::SuspendingEventArgs^ e);
+		void OnSuspending(Platform::Object^ sender, Windows::ApplicationModel::SuspendingEventArgs^ e);
 	};
 }

@@ -27,7 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{54186252-5f90-48c1-9436-73a1f52a0c16}</ProjectGuid>
+    <ProjectGuid>{a0e103de-8edf-47e5-ab4b-1f6490218cce}</ProjectGuid>
     <RootNamespace>MandelbrotViewer</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and '$(VisualStudioVersion)' == ''">$(VCTargetsPath11)</VCTargetsPath>
@@ -92,19 +92,43 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <PackageCertificateKeyFile>MandelbrotViewer_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>AEF1DFFDCDC3CA4EAF9FAB28CF287F603A4E30C4</PackageCertificateThumbprint>
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ClCompile>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Common\BindableBase.h" />
-    <ClInclude Include="Common\BooleanToVisibilityConverter.h" />
-    <ClInclude Include="Common\BooleanNegationConverter.h" />
-    <ClInclude Include="Common\LayoutAwarePage.h" />
-    <ClInclude Include="Common\RichTextColumns.h" />
     <ClInclude Include="App.xaml.h">
       <DependentUpon>App.xaml</DependentUpon>
     </ClInclude>
-    <ClInclude Include="MandelbrotView.xaml.h">
+    <ClInclude Include=".\MandelbrotView.xaml.h">
       <DependentUpon>MandelbrotView.xaml</DependentUpon>
     </ClInclude>
   </ItemGroup>
@@ -115,7 +139,7 @@
     <Page Include="Common\StandardStyles.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MandelbrotView.xaml">
+    <Page Include=".\MandelbrotView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
@@ -123,7 +147,6 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Common\ReadMe.txt" />
     <None Include="MandelbrotViewer_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -136,12 +159,7 @@
     <ClCompile Include="App.xaml.cpp">
       <DependentUpon>App.xaml</DependentUpon>
     </ClCompile>
-    <ClCompile Include="Common\BindableBase.cpp" />
-    <ClCompile Include="Common\BooleanToVisibilityConverter.cpp" />
-    <ClCompile Include="Common\BooleanNegationConverter.cpp" />
-    <ClCompile Include="Common\LayoutAwarePage.cpp" />
-    <ClCompile Include="Common\RichTextColumns.cpp" />
-    <ClCompile Include="MandelbrotView.xaml.cpp">
+    <ClCompile Include=".\MandelbrotView.xaml.cpp">
       <DependentUpon>MandelbrotView.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="pch.cpp">

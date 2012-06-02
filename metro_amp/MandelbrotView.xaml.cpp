@@ -191,7 +191,7 @@ void MandelbrotView::OnNavigatedTo(NavigationEventArgs^ e)
 		do_mandel();
 		do_map_to_argb();
 	}
-	catch (const Concurrency::runtime_exception& e)
+	catch (const Concurrency::runtime_exception&)
 	{
 		this->elapsed->Text = "error";
 	}

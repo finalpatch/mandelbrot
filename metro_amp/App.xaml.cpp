@@ -1,6 +1,6 @@
 ﻿//
 // App.xaml.cpp
-// Implementation of the App.xaml class.
+// Implementation of the App class.
 //
 
 #include "pch.h"
@@ -22,7 +22,7 @@ using namespace Windows::UI::Xaml::Interop;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
 
-// The Split Application template is documented at http://go.microsoft.com/fwlink/?LinkId=234228
+// The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=234227
 
 /// <summary>
 /// Initializes the singleton application object.  This is the first line of authored code
@@ -39,9 +39,17 @@ App::App()
 /// will be used when the application is launched to open a specific file, to display
 /// search results, and so forth.
 /// </summary>
-/// <param name="args">Details about the launch request and process.</param>
+/// <param name="pArgs">Details about the launch request and process.</param>
 void App::OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEventArgs^ pArgs)
 {
+	// Do not repeat app initialization when already running, just ensure that
+	// the window is active
+	if (pArgs->PreviousExecutionState == ApplicationExecutionState::Running)
+	{
+		Window::Current->Activate();
+		return;
+	}
+
 	if (pArgs->PreviousExecutionState == ApplicationExecutionState::Terminated)
 	{
 		//TODO: Load state from previously suspended application
@@ -49,8 +57,10 @@ void App::OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEvent
 
 	// Create a Frame to act navigation context and navigate to the first page
 	auto rootFrame = ref new Frame();
-	TypeName pageType = { MandelbrotView::typeid->FullName, TypeKind::Metadata };
-	rootFrame->Navigate(pageType);
+	if (!rootFrame->Navigate(TypeName(MandelbrotView::typeid)))
+	{
+		throw ref new FailureException("Failed to create initial page");
+	}
 
 	// Place the frame in the current Window and ensure that it is active
 	Window::Current->Content = rootFrame;
@@ -66,5 +76,8 @@ void App::OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEvent
 /// <param name="e">Details about the suspend request.</param>
 void App::OnSuspending(Object^ sender, SuspendingEventArgs^ e)
 {
+	(void) sender;	// Unused parameter
+	(void) e;	// Unused parameter
+
 	//TODO: Save application state and stop any background activity
 }

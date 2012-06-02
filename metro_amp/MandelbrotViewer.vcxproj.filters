@@ -2,47 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Common">
-      <UniqueIdentifier>54186252-5f90-48c1-9436-73a1f52a0c16</UniqueIdentifier>
+      <UniqueIdentifier>a0e103de-8edf-47e5-ab4b-1f6490218cce</UniqueIdentifier>
     </Filter>
     <Filter Include="Assets">
-      <UniqueIdentifier>fda8a5d5-f16f-479a-88d0-c7ae20c96e8c</UniqueIdentifier>
+      <UniqueIdentifier>bffae224-81fb-4e97-822b-fee6f9247d81</UniqueIdentifier>
     </Filter>
-    <None Include="Common\ReadMe.txt">
-      <Filter>Common</Filter>
-    </None>
     <Page Include="Common\StandardStyles.xaml">
       <Filter>Common</Filter>
     </Page>
-    <ClCompile Include="Common\BindableBase.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\BooleanToVisibilityConverter.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\BooleanNegationConverter.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\RichTextColumns.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\LayoutAwarePage.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClInclude Include="Common\BindableBase.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\BooleanToVisibilityConverter.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\BooleanNegationConverter.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\RichTextColumns.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\LayoutAwarePage.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <Image Include="Assets\Logo.png">
       <Filter>Assets</Filter>
     </Image>
@@ -60,22 +27,22 @@
     <ApplicationDefinition Include="App.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <AppxManifest Include="Package.appxmanifest" />
+    <ClCompile Include="App.xaml.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include=".\MandelbrotView.xaml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="App.xaml.h" />
-    <ClInclude Include="MandelbrotView.xaml.h" />
+    <ClInclude Include=".\MandelbrotView.xaml.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="App.xaml.cpp" />
-    <ClCompile Include="pch.cpp" />
-    <ClCompile Include="MandelbrotView.xaml.cpp" />
+    <AppxManifest Include="Package.appxmanifest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MandelbrotViewer_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MandelbrotView.xaml" />
+    <Page Include=".\MandelbrotView.xaml" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
 
-  <Identity Name="22062d69-b33c-429d-9643-584d0b023e83"
+  <Identity Name="a200a851-ae74-4679-a4dd-09b2093cebec"
             Publisher="CN=Li"
             Version="1.0.0.0" />
 
@@ -9,12 +9,11 @@
     <DisplayName>MandelbrotViewer</DisplayName>
     <PublisherDisplayName>Li</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
-    <Description>MandelbrotViewer</Description>
   </Properties>
 
   <Prerequisites>
-    <OSMinVersion>6.2</OSMinVersion>
-    <OSMaxVersionTested>6.2</OSMaxVersionTested>
+    <OSMinVersion>6.2.0</OSMinVersion>
+    <OSMaxVersionTested>6.2.0</OSMaxVersionTested>
   </Prerequisites>
 
   <Resources>
@@ -31,7 +30,7 @@
             SmallLogo="Assets\SmallLogo.png"
             Description="MandelbrotViewer"
             ForegroundText="light"
-            BackgroundColor="#222222">
+            BackgroundColor="#464646">
             <DefaultTile ShowName="allLogos" />
             <SplashScreen Image="Assets\SplashScreen.png" />
         </VisualElements>

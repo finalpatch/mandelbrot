@@ -1,11 +1,10 @@
 ﻿//
 // MandelbrotView.xaml.h
-// Declaration of the MandelbrotView.xaml class.
+// Declaration of the MandelbrotView class.
 //
 
 #pragma once
 
-#include "pch.h"
 #include "MandelbrotView.g.h"
 
 namespace MandelbrotViewer
