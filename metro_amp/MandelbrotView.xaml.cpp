@@ -12,12 +12,8 @@
 #include <stdint.h>
 #include <amp.h>
 #include <amp_math.h>
-
-/* BEGIN HACK - see below */
-#define NOMINMAX 1
-#include <Windows.h>
-#include <INITGUID.H>
-/* END HACK */
+#include <wrl\client.h>
+#include <robuffer.h>
 
 using namespace MandelbrotViewer;
 
@@ -37,28 +33,6 @@ using namespace concurrency;
 using namespace concurrency::fast_math;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
-/* BEGIN HACK - ATM there's no way to access an IBuffer object in WinRT */
-//905a0fef-bc53-11df-8c49-001e4fc686da
-DEFINE_GUID(IID_IBufferInternal, 0x905a0fef, 0xbc53, 0x11df, 0x8c, 0x49, 0x00, 0x1e, 0x4f, 0xc6, 0x86, 0xda);
-struct IBufferInternal : IUnknown
-{
-	STDMETHOD(GetBuffer)(unsigned char** c) PURE;
-};
-unsigned char* GetBitmapBuffer(WriteableBitmap^ bmp)
-{
-	auto buf = bmp->PixelBuffer;
-	IUnknown* pUnk = reinterpret_cast<IUnknown*>(buf);
-	IBufferInternal* pBufferInternal = nullptr;
-	HRESULT hr = pUnk->QueryInterface(IID_IBufferInternal, (void**)&pBufferInternal);
-	if(hr != S_OK)
-		return nullptr;
-	unsigned char* pBuff = nullptr;
-	pBufferInternal->GetBuffer(&pBuff);
-	pBufferInternal->Release();
-	return pBuff;
-}
-/* END HACK */
 
 // ********************************************************************
 // Mandelbrot
@@ -170,6 +144,17 @@ void do_map_to_argb()
 
     for(int i = 0; i < N*N; ++i)
         argb_array[i] = map_to_argb(log_count[i]);
+}
+
+unsigned char* GetBitmapBuffer(WriteableBitmap^ bmp)
+{
+	using namespace Microsoft::WRL;
+	ComPtr<Windows::Storage::Streams::IBufferByteAccess> bufAccess;
+	ComPtr<IUnknown> bufObj(reinterpret_cast<IUnknown*>(bmp->PixelBuffer));
+	bufObj.As(&bufAccess);
+	unsigned char* p = nullptr;
+	bufAccess->Buffer(&p);
+	return p;
 }
 
 MandelbrotView::MandelbrotView()
