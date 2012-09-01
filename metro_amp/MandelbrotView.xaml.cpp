@@ -54,10 +54,10 @@ float mag2(float real, float imag) restrict(amp)
 	return real*real + imag*imag;
 }
 
-float mandel(int idx) restrict(amp)
+float mandel(int x, int y) restrict(amp)
 {
-    float z0_r = trans_x(idx % N);
-    float z0_i = trans_y(idx / N);
+    float z0_r = trans_x(x);
+    float z0_i = trans_y(y);
 
 	float z_r = 0;
 	float z_i = 0;
@@ -130,11 +130,11 @@ static uint32_t argb_array[N*N];
 
 void do_mandel()
 {
-	array_view<float> log_count_view(N*N, log_count);
+	array_view<float, 2> log_count_view(extent<2>(N, N), log_count);
 	parallel_for_each(log_count_view.extent,
-		[=](index<1> idx) restrict(amp)
+		[=](index<2> idx) restrict(amp)
 	{
-		log_count_view[idx] = mandel(idx[0]);
+		log_count_view[idx] = mandel(idx[1], idx[0]);
 	});
 }
 void do_map_to_argb()
