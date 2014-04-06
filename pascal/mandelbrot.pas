@@ -60,20 +60,18 @@ end;
 
 function mandel(idx : longword) : real;
 var
-   z0: complex;
-   z: complex;
-   k: integer;
+   z0    : complex;
+   z     : complex;
+   k     : integer;
    magz2 : real;
 begin
-   z0.re := trans_x(idx mod N);
-   z0.im := trans_y(idx div N);
-   z.re := 0.0;
-   z.im := 0.0;
+   z0 := cinit(trans_x(idx mod N), trans_y(idx div N));
+   z  := cinit(0.0, 0.0);
    k := 0;
    while k < depth do
    begin
       magz2 := mag2(z);
-      if  magz2 >= escape2 then
+      if magz2 >= escape2 then
          break;
       z := z * z + z0;
       k := k + 1;
