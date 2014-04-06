@@ -1,6 +1,8 @@
+{ Compile for SDL1.2: fpc mandelbrot.pas }
+{ Compile for SDL2: fpc -dSDL2 -FuPATH_TO_SDL2_UNIT mandelbrot.pas }
 program mandelbrot;
 
-uses sdl, ucomplex, math, sysutils, dateutils;
+uses ucomplex, math, sysutils, dateutils, {$if defined(SDL2)} sdl2; {$else} sdl; {$endif}
 
 const
    N: integer                            = 1000;  { grid size }
@@ -35,21 +37,21 @@ var
 
 { ---------------------------------------------------------------------------- }
 
-function trans_x(x: integer) : real;
+function trans_x(x: integer) : real; inline;
 begin
    trans_x := 3.0 * (real(x) / N) - 2.0;
 end;
 
 { ---------------------------------------------------------------------------- }
 
-function trans_y(y: integer) : real;
+function trans_y(y: integer) : real; inline;
 begin
    trans_y := 3.0 * (real(y) / N) - 1.5;
 end;
 
 { ---------------------------------------------------------------------------- }
 
-function mag2(const x: complex) : real;
+function mag2(const x: complex) : real; inline;
 begin
    mag2 := x.re * x.re + x.im * x.im;
 end;
@@ -81,14 +83,14 @@ end;
 
 { ---------------------------------------------------------------------------- }
 
-function interpolate(d : real; v0 : real; v1 : real) : integer;
+function interpolate(d : real; v0 : real; v1 : real) : integer; inline;
 begin
    interpolate := trunc((d * (v1 - v0) + v0) * 255.0);
 end;
 
 { ---------------------------------------------------------------------------- }
 
-function map_to_argb(x :real) : longword;
+function map_to_argb(x :real) : longword; inline;
 var
    bin                    : integer;
    r0, g0, b0, r1, g1, b1 : real;
@@ -123,7 +125,7 @@ procedure do_mandel;
 var
    idx : longword;
 begin
-   for idx := 0 to 999999 do
+   for idx := 0 to (N*N-1) do
       begin
          log_count[idx] := mandel(idx);
       end;
@@ -135,9 +137,9 @@ procedure do_map_to_argb;
 var
    idx : longword;
 begin
-   max_result := maxvalue(log_count, 1000000);
-   min_result := minvalue(log_count, 1000000);
-   for idx := 0 to 999999 do
+   max_result := maxvalue(log_count, N*N);
+   min_result := minvalue(log_count, N*N);
+   for idx := 0 to (N*N-1) do
       begin
          argb_array[idx] := map_to_argb(log_count[idx]);
       end;
@@ -146,13 +148,19 @@ end;
 { ---------------------------------------------------------------------------- }
 
 var
+{$if defined(SDL2)}
+   win    : PSDL_Window;
+   ren    : PSDL_Renderer;
+   tex    : PSDL_Texture;
+{$else}
    scr    : PSDL_Surface;
-   evt    : TSDL_Event;
    row    : integer;
    col    : integer;
    line   : ^longword;
    stride : integer;
    idx    : longword;
+{$endif}
+   evt    : TSDL_Event;
    start  : TDateTime;
    finish : TDateTime;
 
@@ -164,14 +172,21 @@ begin
    writeln(MilliSecondSpan(start, finish):4:2, ' ms');
 
    SDL_init(SDL_INIT_VIDEO);
+
+{$if defined(SDL2)}
+   SDL_CreateWindowAndRenderer(N, N, 0, @win, @ren);
+   SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
+   SDL_RenderClear(ren);
+   tex := SDL_CreateTexture(ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, N, N);
+   SDL_UpdateTexture(tex, nil, @argb_array[0], N*4);
+   SDL_RenderCopy(ren, tex, nil, nil);
+   SDL_RenderPresent(ren);
+{$else}
    scr := SDL_SetVideoMode(1000, 1000, 32, SDL_SWSURFACE);
-
    SDL_LockSurface(scr);
-
    line := scr^.pixels;
    stride := scr^.pitch div 4;   
-   idx := 0;
-   
+   idx := 0;   
    for row := 1 to scr^.h do
       begin
          for col := 0 to scr^.w-1 do
@@ -180,11 +195,10 @@ begin
                idx := idx + 1;
             end;
          line := line + stride;
-      end;
-   
+      end;   
    SDL_UnlockSurface(scr);
-
    SDL_Flip(scr);
+{$endif}
 
    while SDL_WaitEvent(@evt) <> 0 do
    begin
