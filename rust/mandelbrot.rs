@@ -3,16 +3,18 @@
 
 extern crate num;
 extern crate time;
+extern crate sync;
 
+use std::slice;
 use std::num::ln;
 use std::num::Bounded;
-use num::complex::{Cmplx,Complex64};
-use time::precise_time_ns;
 use std::io::File;
 use std::path::Path;
+use std::task::{task, TaskBuilder, TaskResult};
+use num::complex::{Cmplx,Complex64};
+use time::precise_time_ns;
 
-//static parallelism: uint = 16;
-static parallelism: uint = 1;
+static parallelism: uint = 16;
 
 // ********************************************************************
 // Mandelbrot
@@ -125,20 +127,18 @@ fn do_map_to_argb_range(beg: uint, end: uint) {
 }
 
 static job_size: uint = N*N / parallelism;
-static worker_threads: uint = parallelism - 1;
+static worker_threads: uint = parallelism;
 
 fn do_mandel() {
     if parallelism > 1 {
-/*
-        QFuture<void> results[worker_threads];
-        for(int i = 0; i < worker_threads; ++i)
-            results[i] = QtConcurrent::run(do_mandel_range, job_size * i, job_size * (i + 1));
+        let mut results = slice::from_fn(worker_threads,
+                                         |i| sync::Future::spawn(proc() {
+                                             do_mandel_range(job_size * i, job_size * (i + 1));
+                                         }));
 
-        do_mandel_range(job_size * worker_threads, N*N);
-
-        for(int i = 0; i < worker_threads; ++i)
-            results[i].waitForFinished();
-*/
+        for ft in results.mut_iter()  {
+            ft.get();
+        }
     }
     else {
         do_mandel_range(0, N*N);
@@ -166,16 +166,14 @@ fn do_map_to_argb() {
 
     if parallelism > 1
     {
-/*
-        QFuture<void> results[worker_threads];
-        for(int i = 0; i < worker_threads; ++i)
-            results[i] = QtConcurrent::run(do_map_to_argb_range, job_size * i, job_size * (i + 1));
+        let mut results = slice::from_fn(worker_threads,
+                                         |i| sync::Future::spawn(proc() {
+                                             do_map_to_argb_range(job_size * i, job_size * (i + 1));
+                                         }));
 
-        do_map_to_argb_range(job_size * worker_threads, N*N);
-
-        for(int i = 0; i < worker_threads; ++i)
-            results[i].waitForFinished();
-*/
+        for ft in results.mut_iter()  {
+            ft.get();
+        }
     } else {
         do_map_to_argb_range(0, N*N);
     }
