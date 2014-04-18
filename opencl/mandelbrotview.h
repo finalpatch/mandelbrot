@@ -1,7 +1,7 @@
 #ifndef MANDELBROTVIEW_H
 #define MANDELBROTVIEW_H
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 class MandelbrotView : public QWidget
 {

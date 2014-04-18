@@ -4,7 +4,11 @@
 #include <algorithm>
 #include <cmath>
 #include <stdint.h>
-#include <QtConcurrentMap>
+#include <QtConcurrent/QtConcurrentMap>
+#include <QtConcurrent/QtConcurrentRun>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QStyle>
 
 const static int parallelism = 16;
 
@@ -156,7 +160,7 @@ MandelbrotView::MandelbrotView(QWidget *parent) :
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,
                                     Qt::AlignCenter,
                                     QSize(N, N),
-                                    qApp->desktop()->availableGeometry()));
+                                    QApplication::desktop()->availableGeometry()));
     QTime time;
     time.start();
     {

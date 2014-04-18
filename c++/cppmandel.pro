@@ -6,10 +6,12 @@
 
 QT       += core gui
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 TARGET = cppmandel
 TEMPLATE = app
 
-QMAKE_CXXFLAGS_RELEASE += -ffast-math
+# QMAKE_CXXFLAGS_RELEASE += -ffast-math
 
 SOURCES += main.cpp\
     mandelbrotview.cpp

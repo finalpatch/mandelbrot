@@ -9,10 +9,21 @@ QT       += core gui
 TARGET = cppmandel
 TEMPLATE = app
 
-INCLUDEPATH += $$(TBBROOT)/include
-LIBS += -L$$(TBBROOT)/build/windows_ia32_gcc_mingw_release -ltbb
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-QMAKE_CXXFLAGS_RELEASE += -ffast-math
+INCLUDEPATH += $$(TBBROOT)/include
+win32 {
+  contains(QMAKE_TARGET.arch, x86_64) {
+    Release:LIBPATH += $$(TBBROOT)/build/windows_intel64_cl_vc12_release
+    Debug:LIBPATH += $$(TBBROOT)/build/windows_intel64_cl_vc12_debug
+  }
+  else {
+    Release:LIBPATH += $$(TBBROOT)/build/windows_ia32_cl_vc12_release
+    Debug:LIBPATH += $$(TBBROOT)/build/windows_ia32_cl_vc12_debug
+  }
+}
+
+# QMAKE_CXXFLAGS_RELEASE += -ffast-math
 
 SOURCES += main.cpp\
     mandelbrotview.cpp

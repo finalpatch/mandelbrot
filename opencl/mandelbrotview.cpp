@@ -1,10 +1,15 @@
 #include "mandelbrotview.h"
-#include <CL/cl.hpp>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <QtGui>
 #include <algorithm>
+#include <QtConcurrent/QtConcurrentRun>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QStyle>
+#include <stdint.h>
+#include <CL/cl.hpp>
 
 const static int N = 1000;           // grid size
 const static int depth = 200;        // max iterations

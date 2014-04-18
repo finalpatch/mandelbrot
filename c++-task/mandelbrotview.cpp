@@ -5,6 +5,9 @@
 #include <cmath>
 #include <stdint.h>
 #include <tbb/compat/ppl.h>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QStyle>
 
 // ********************************************************************
 // Mandelbrot
