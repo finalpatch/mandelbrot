@@ -2,12 +2,14 @@
 { Compile for SDL2: fpc -dSDL2 -FuPATH_TO_SDL2_UNIT mandelbrot.pas }
 program mandelbrot;
 
-uses ucomplex, math, sysutils, dateutils, {$if defined(SDL2)} sdl2; {$else} sdl; {$endif}
+uses ucomplex, math, sysutils, dateutils,
+  {$ifdef unix}cthreads,{$endif}
+  {$if defined(SDL2)} SDL2; {$else} sdl; {$endif}
 
 const
-   N: integer                            = 1000;  { grid size }
-   depth:integer                         = 200;   { max iterations }
-   escape2:real                          = 400.0; { escape radius ^ 2 }
+   N                                = 1000;  { grid size }
+   depth                            = 200;   { max iterations }
+   escape2                          = 400.0; { escape radius ^ 2 }
    color_map: array[0..18, 0..2] of real = 
      (( 0.0, 0.0, 0.5 ) ,
       ( 0.0, 0.0, 1.0 ) ,
@@ -29,11 +31,16 @@ const
       ( 0.0, 0.0, 0.5 ) ,
       ( 0.0, 0.0, 0.0 ) );
 
+   parallelism = 16;
+   jobsize = N*N div parallelism;
+
 var
    min_result : real = 0.0; 
    max_result : real = 0.0;
-   log_count  : array[0..999999] of real;
-   argb_array : array[0..999999] of longword;
+   log_count  : array[0..(N*N-1)] of real;
+   argb_array : array[0..(N*N-1)] of longword;
+
+   threads : array [0..(parallelism-1)] of TThreadID;
 
 { ---------------------------------------------------------------------------- }
 
@@ -58,7 +65,7 @@ end;
 
 { ---------------------------------------------------------------------------- }
 
-function mandel(idx : longword) : real;
+function mandel(idx : longword) : real; inline;
 var
    z0    : complex;
    z     : complex;
@@ -115,18 +122,18 @@ begin
       end;
 end;
 
-
-
 { ---------------------------------------------------------------------------- }
 
-procedure do_mandel;
+function do_mandel(p : pointer) : ptrint;
 var
-   idx : longword;
+   a, idx : longword;
 begin
-   for idx := 0 to (N*N-1) do
-      begin
-         log_count[idx] := mandel(idx);
-      end;
+   for a := 0 to jobsize-1 do
+   begin
+      idx := a*parallelism+longword(p);
+      log_count[idx] := mandel(idx);
+   end;
+   do_mandel := 0;
 end;
 
 { ---------------------------------------------------------------------------- }
@@ -161,10 +168,14 @@ var
    evt    : TSDL_Event;
    start  : TDateTime;
    finish : TDateTime;
+   i      : integer;
 
 begin
    start := now;
-   do_mandel();
+   for i := 0 to parallelism do
+      threads[i] := beginthread(@do_mandel, pointer(i));
+   for i := 0 to parallelism do
+       waitforthreadterminate(threads[i], 0);
    do_map_to_argb();
    finish := now;
    writeln(MilliSecondSpan(start, finish):4:2, ' ms');
