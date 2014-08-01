@@ -4,11 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdint.h>
-#include <QtConcurrent/QtConcurrentMap>
-#include <QtConcurrent/QtConcurrentRun>
-#include <QApplication>
-#include <QDesktopWidget>
-#include <QStyle>
+#include <QtConcurrent>
 
 const static int parallelism = 16;
 
@@ -157,10 +153,7 @@ void do_map_to_argb()
 MandelbrotView::MandelbrotView(QWidget *parent) :
     QWidget(parent)
 {
-    setGeometry(QStyle::alignedRect(Qt::LeftToRight,
-                                    Qt::AlignCenter,
-                                    QSize(N, N),
-                                    QApplication::desktop()->availableGeometry()));
+    setGeometry(QRect(0, 0, N, N));
     QTime time;
     time.start();
     {

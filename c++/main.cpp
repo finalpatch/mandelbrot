@@ -1,5 +1,5 @@
-#include "mandelbrotview.h"
 #include <QApplication>
+#include "mandelbrotview.h"
 
 int main(int argc, char *argv[])
 {
