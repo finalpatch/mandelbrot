@@ -39,7 +39,7 @@ func mandel(idx: Int) -> Double {
 		z_r = t_r * t_r - t_i * t_i + z0_r
 		z_i = 2 * t_r * t_i + z0_i
 	}
-	return Double(log(Double(k) + 1.0 - Double(log(Double(log(max(mag2(z_r, z_i), escape2)))) / 2.0) / Double(log(2.0))))
+	return log(Double(k) + 1.0 - log(log(max(mag2(z_r, z_i), escape2)) / 2.0) / log(2.0));
 }
 
 let color_map =
