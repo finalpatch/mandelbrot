@@ -121,10 +121,10 @@ class CustomView: NSView{
 		for i in 0...(N*N-1) {
 			argb[i] = map_to_argb(logcount[i])
 		}
-		argb.withUnsafePointerToElements() { (cArray: UnsafePointer<UInt32>) -> () in
+		argb.withUnsafeMutableBufferPointer() { (inout cArray: UnsafeMutableBufferPointer<UInt32>) -> () in
 			let colorSpace:CGColorSpace = CGColorSpaceCreateDeviceRGB()
 			let bitmapInfo = CGBitmapInfo.fromRaw(CGImageAlphaInfo.PremultipliedLast.toRaw())!
-			let context = CGBitmapContextCreate(cArray, UInt(N), UInt(N), 8, UInt(N*4), colorSpace, bitmapInfo)
+			let context = CGBitmapContextCreate(cArray.baseAddress, UInt(N), UInt(N), 8, UInt(N*4), colorSpace, bitmapInfo)
 			self.myImage = NSImage(CGImage: CGBitmapContextCreateImage(context), size: NSSize(width: N, height: N))
 		}
 	}
