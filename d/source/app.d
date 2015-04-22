@@ -101,8 +101,8 @@ uint map_to_argb(double x)
     }
 }
 
-shared double log_count[N*N];
-uint argb_array[N*N];
+shared double[N*N] log_count;
+uint[N*N] argb_array;
 
 void do_mandel_range(int beg, int end)
 {

@@ -1,6 +1,6 @@
 {
 	"name": "mandelbrot",
 	"dependencies": {
-		"derelict:sdl2": "~master",
+        "derelict-sdl2" : ">=1.9.1",
 	}
 }
